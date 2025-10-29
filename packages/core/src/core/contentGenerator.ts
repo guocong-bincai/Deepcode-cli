@@ -21,6 +21,7 @@ import { LoggingContentGenerator } from './loggingContentGenerator.js';
 import { InstallationManager } from '../utils/installationManager.js';
 import { FakeContentGenerator } from './fakeContentGenerator.js';
 import { RecordingContentGenerator } from './recordingContentGenerator.js';
+import { DoubaoContentGenerator } from './doubaoContentGenerator.js';
 
 /**
  * Interface abstracting the core functionalities for generating content and counting tokens.
@@ -48,6 +49,7 @@ export enum AuthType {
   USE_GEMINI = 'gemini-api-key',
   USE_VERTEX_AI = 'vertex-ai',
   CLOUD_SHELL = 'cloud-shell',
+  USE_DOUBAO = 'doubao-api-key',
 }
 
 export type ContentGeneratorConfig = {
@@ -55,6 +57,7 @@ export type ContentGeneratorConfig = {
   vertexai?: boolean;
   authType?: AuthType;
   proxy?: string;
+  baseUrl?: string; // For custom API endpoints like Doubao
 };
 
 export function createContentGeneratorConfig(
@@ -63,6 +66,7 @@ export function createContentGeneratorConfig(
 ): ContentGeneratorConfig {
   const geminiApiKey = process.env['GEMINI_API_KEY'] || undefined;
   const googleApiKey = process.env['GOOGLE_API_KEY'] || undefined;
+  const doubaoApiKey = process.env['DOUBAO_API_KEY'] || undefined;
   const googleCloudProject =
     process.env['GOOGLE_CLOUD_PROJECT'] ||
     process.env['GOOGLE_CLOUD_PROJECT_ID'] ||
@@ -95,6 +99,13 @@ export function createContentGeneratorConfig(
   ) {
     contentGeneratorConfig.apiKey = googleApiKey;
     contentGeneratorConfig.vertexai = true;
+
+    return contentGeneratorConfig;
+  }
+
+  if (authType === AuthType.USE_DOUBAO && doubaoApiKey) {
+    contentGeneratorConfig.apiKey = doubaoApiKey;
+    contentGeneratorConfig.baseUrl = 'https://ark.cn-beijing.volces.com/api/v3';
 
     return contentGeneratorConfig;
   }
@@ -154,6 +165,23 @@ export async function createContentGenerator(
       });
       return new LoggingContentGenerator(googleGenAI.models, gcConfig);
     }
+
+    if (config.authType === AuthType.USE_DOUBAO) {
+      if (!config.apiKey) {
+        throw new Error('豆包API密钥未设置，请设置DOUBAO_API_KEY环境变量');
+      }
+      if (!config.baseUrl) {
+        throw new Error('豆包API基础URL未设置');
+      }
+
+      const doubaoGenerator = new DoubaoContentGenerator({
+        apiKey: config.apiKey,
+        baseUrl: config.baseUrl,
+      });
+
+      return new LoggingContentGenerator(doubaoGenerator, gcConfig);
+    }
+
     throw new Error(
       `Error creating contentGenerator: Unsupported authType: ${config.authType}`,
     );
