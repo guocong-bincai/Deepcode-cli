@@ -20,8 +20,19 @@ echo "✅ Node.js版本检查通过: $(node --version)"
 
 # 设置豆包API密钥
 echo "🔧 设置豆包API密钥..."
-export DOUBAO_API_KEY="7d06f6e9-3bdb-4fa3-91df-80ef487f7a61"
-echo "✅ 豆包API密钥已设置（测试用）"
+if [ -z "$DOUBAO_API_KEY" ]; then
+    echo "❗ 请先设置豆包API密钥："
+    echo "   获取地址: https://console.volcengine.com/ark"
+    echo "   设置方式: export DOUBAO_API_KEY=\"your-api-key\""
+    echo ""
+    read -p "请输入你的豆包API密钥: " USER_API_KEY
+    if [ -z "$USER_API_KEY" ]; then
+        echo "❌ 未输入API密钥，退出"
+        exit 1
+    fi
+    export DOUBAO_API_KEY="$USER_API_KEY"
+fi
+echo "✅ 豆包API密钥已设置"
 
 # 创建测试项目目录
 TEST_DIR="$HOME/deepcode-test-$(date +%s)"

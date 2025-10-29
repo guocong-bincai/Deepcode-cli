@@ -46,11 +46,16 @@ DeepCode CLI 是一个开源的AI代码助手命令行工具，专为开发者�
 
 ### 🚀 快速开始
 
-#### ⚡ 30秒快速体验
+#### ⚡ 开始使用
 
 ```bash
-# 一键启动（推荐新手）
-export DOUBAO_API_KEY="7d06f6e9-3bdb-4fa3-91df-80ef487f7a61" && npx deepcode-cli@latest
+# 1. 获取你的豆包API密钥
+# 访问: https://console.volcengine.com/ark
+# 创建应用获取API Key
+
+# 2. 设置密钥并启动
+export DOUBAO_API_KEY="your-actual-api-key"
+npx deepcode-cli@latest
 ```
 
 #### 📦 安装方式
@@ -71,7 +76,7 @@ tar -xf deepcode-cli-*.tgz && cd package && node deepcode
 
 ```bash
 # 设置豆包API密钥（测试用）
-export DOUBAO_API_KEY="7d06f6e9-3bdb-4fa3-91df-80ef487f7a61"
+export DOUBAO_API_KEY="your-doubao-api-key"
 
 # 启动DeepCode CLI
 deepcode
@@ -105,7 +110,7 @@ deepcode
 #### 🔍 项目分析与代码审查
 ```bash
 # 启动DeepCode CLI
-export DOUBAO_API_KEY="7d06f6e9-3bdb-4fa3-91df-80ef487f7a61"
+export DOUBAO_API_KEY="your-doubao-api-key"
 deepcode
 
 # 在交互界面中：
@@ -215,11 +220,16 @@ DeepCode CLI is an open-source AI code assistant command-line tool designed for 
 
 ### 🚀 Quick Start
 
-#### ⚡ 30-Second Quick Experience
+#### ⚡ Getting Started
 
 ```bash
-# One-click start (recommended for beginners)
-export DOUBAO_API_KEY="7d06f6e9-3bdb-4fa3-91df-80ef487f7a61" && npx deepcode-cli@latest
+# 1. Get your Doubao API key
+# Visit: https://console.volcengine.com/ark
+# Create application and get API Key
+
+# 2. Set key and start
+export DOUBAO_API_KEY="your-actual-api-key"
+npx deepcode-cli@latest
 ```
 
 #### 📦 Installation Methods
@@ -240,7 +250,7 @@ tar -xf deepcode-cli-*.tgz && cd package && node deepcode
 
 ```bash
 # Set Doubao API key (test key)
-export DOUBAO_API_KEY="7d06f6e9-3bdb-4fa3-91df-80ef487f7a61"
+export DOUBAO_API_KEY="your-doubao-api-key"
 
 # Start DeepCode CLI
 deepcode
@@ -274,7 +284,7 @@ deepcode
 #### 🔍 Project Analysis & Code Review
 ```bash
 # Start DeepCode CLI
-export DOUBAO_API_KEY="7d06f6e9-3bdb-4fa3-91df-80ef487f7a61"
+export DOUBAO_API_KEY="your-doubao-api-key"
 deepcode
 
 # In interactive interface:
@@ -361,14 +371,18 @@ This project is open source under the [Apache 2.0](LICENSE) license.
 
 ### 中文用户
 ```bash
-# 一键体验豆包增强的AI编程
-export DOUBAO_API_KEY="7d06f6e9-3bdb-4fa3-91df-80ef487f7a61" && npx deepcode-cli@latest
+# 1. 获取API密钥: https://console.volcengine.com/ark  
+# 2. 设置并启动
+export DOUBAO_API_KEY="your-actual-api-key"
+npx deepcode-cli@latest
 ```
 
 ### English Users  
 ```bash
-# One-click experience with Doubao-enhanced AI programming
-export DOUBAO_API_KEY="7d06f6e9-3bdb-4fa3-91df-80ef487f7a61" && npx deepcode-cli@latest
+# 1. Get API key: https://console.volcengine.com/ark
+# 2. Set and start
+export DOUBAO_API_KEY="your-actual-api-key"
+npx deepcode-cli@latest
 ```
 
 ### 获得帮助 / Get Help
