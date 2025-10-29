@@ -43,5 +43,16 @@ export function validateAuthMethod(authMethod: string): string | null {
     return null;
   }
 
+  if (authMethod === AuthType.USE_DOUBAO) {
+    if (!process.env['DOUBAO_API_KEY']) {
+      return (
+        'DOUBAO_API_KEY not found. Please obtain your API key from ByteDance Doubao platform.\n' +
+        '\n' +
+        'To continue, please set the DOUBAO_API_KEY environment variable or add it to a .env file.'
+      );
+    }
+    return null;
+  }
+
   return 'Invalid auth method selected.';
 }
