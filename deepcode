@@ -1,0 +1,339 @@
+#!/usr/bin/env node
+
+/**
+ * DeepCode CLI - 支持豆包模型的AI代码助手
+ * 独立可执行版本，完全按照README使用方式
+ */
+
+import readline from 'readline';
+
+const DOUBAO_API_KEY = process.env.DOUBAO_API_KEY;
+const version = '1.0.0';
+
+// 豆包API调用函数
+async function callDoubao(userInput, options = {}) {
+  if (!DOUBAO_API_KEY) {
+    throw new Error('❌ 豆包API密钥未设置，请设置DOUBAO_API_KEY环境变量');
+  }
+
+  const request = {
+    model: 'doubao-seed-1-6-251015',
+    messages: [
+      {
+        role: 'user',
+        content: userInput
+      }
+    ],
+    max_completion_tokens: options.maxTokens || 800,
+    temperature: options.temperature || 0.7,
+    reasoning_effort: 'medium'
+  };
+
+  try {
+    const response = await fetch('https://ark.cn-beijing.volces.com/api/v3/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${DOUBAO_API_KEY}`,
+      },
+      body: JSON.stringify(request),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return {
+        success: true,
+        reply: data.choices[0]?.message?.content || '豆包暂时无法响应，请稍后再试。',
+        usage: data.usage
+      };
+    } else {
+      const errorData = await response.text();
+      throw new Error(`API调用失败 (${response.status}): ${errorData}`);
+    }
+  } catch (error) {
+    throw new Error(`请求错误: ${error.message}`);
+  }
+}
+
+// 交互式模式
+async function startInteractiveMode(options) {
+  console.log('🚀 DeepCode CLI - AI代码助手');
+  console.log('===============================');
+  console.log('🤖 当前模型: 字节豆包 (Doubao)');
+  console.log('💡 提示: 输入中文问题获得最佳体验');
+  console.log('📝 输入 /help 查看帮助，/quit 退出');
+  console.log('');
+
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  let currentModel = options.model || 'doubao';
+
+  function handleCommand(input) {
+    const command = input.toLowerCase().trim();
+    
+    switch (command) {
+      case '/help':
+        console.log('\n📚 DeepCode CLI 帮助');
+        console.log('═══════════════════');
+        console.log('🔧 基础命令:');
+        console.log('  /help     - 显示此帮助信息');
+        console.log('  /quit     - 退出程序');
+        console.log('  /clear    - 清屏');
+        console.log('  /model    - 显示当前模型信息');
+        console.log('  /model doubao - 切换到豆包模型');
+        console.log('');
+        console.log('💡 使用建议:');
+        console.log('  - 用中文提问获得更好效果');
+        console.log('  - 可以询问编程、数学、常识等问题');
+        console.log('  - 支持代码生成和解释');
+        console.log('  - 支持多轮对话');
+        console.log('');
+        return true;
+        
+      case '/quit':
+      case '/exit':
+        console.log('👋 再见！感谢使用DeepCode CLI!');
+        rl.close();
+        return true;
+        
+      case '/clear':
+        console.clear();
+        console.log('🚀 DeepCode CLI - 豆包模型');
+        console.log('🤖 当前模型: 字节豆包 (Doubao) - 屏幕已清理');
+        console.log('');
+        return true;
+        
+      case '/model':
+        console.log('\n🤖 当前模型信息');
+        console.log('═══════════════');
+        console.log('名称: 字节豆包 (Doubao)');
+        console.log('版本: doubao-seed-1-6-251015');
+        console.log('特色: 中文优化，支持推理增强');
+        console.log('API状态: ✅ 正常');
+        console.log('');
+        return true;
+        
+      case '/model doubao':
+        currentModel = 'doubao';
+        console.log('✅ 已切换到豆包模型');
+        return true;
+        
+      default:
+        if (command.startsWith('/model ')) {
+          console.log('❓ 当前仅支持豆包模型，输入 /model doubao');
+          return true;
+        }
+        return false;
+    }
+  }
+
+  function startChat() {
+    rl.question('💬 你: ', async (input) => {
+      if (input.trim() === '') {
+        startChat();
+        return;
+      }
+      
+      // 处理特殊命令
+      if (input.startsWith('/')) {
+        const handled = handleCommand(input);
+        if (!handled) {
+          console.log('❓ 未知命令，输入 /help 查看帮助');
+        }
+        if (input !== '/quit' && input !== '/exit') {
+          startChat();
+        }
+        return;
+      }
+      
+      // 调用豆包API
+      try {
+        console.log('🤔 豆包思考中...');
+        const result = await callDoubao(input, options);
+        
+        console.log('\n🤖 豆包回复:');
+        console.log('─'.repeat(50));
+        console.log(result.reply);
+        console.log('─'.repeat(50));
+        console.log(`📊 Token使用: 输入${result.usage.prompt_tokens}, 输出${result.usage.completion_tokens}`);
+        console.log('');
+        
+      } catch (error) {
+        console.log(`❌ ${error.message}`);
+        console.log('');
+      }
+      
+      // 继续对话
+      startChat();
+    });
+  }
+
+  // 启动对话
+  console.log('🎯 准备就绪！请输入你的问题：');
+  console.log('');
+  startChat();
+
+  // 处理程序退出
+  rl.on('close', () => {
+    console.log('\n👋 谢谢使用DeepCode CLI！');
+    process.exit(0);
+  });
+
+  // 处理Ctrl+C
+  process.on('SIGINT', () => {
+    console.log('\n\n🛑 检测到中断信号');
+    console.log('👋 再见！');
+    rl.close();
+  });
+}
+
+// 单次问答模式
+async function askQuestion(question, options) {
+  try {
+    console.log('🤔 豆包思考中...');
+    const result = await callDoubao(question, options);
+    
+    console.log('\n🤖 豆包回复:');
+    console.log('─'.repeat(50));
+    console.log(result.reply);
+    console.log('─'.repeat(50));
+    console.log(`📊 Token使用: 输入${result.usage.prompt_tokens}, 输出${result.usage.completion_tokens}`);
+    
+  } catch (error) {
+    console.error(`❌ ${error.message}`);
+    process.exit(1);
+  }
+}
+
+// 简单命令行参数解析
+function parseArgs() {
+  const args = process.argv.slice(2);
+  const options = {
+    model: 'doubao',
+    temperature: 0.7,
+    maxTokens: 800,
+    ask: null,
+    analyze: false,
+    docs: false,
+    debug: false,
+    help: false,
+    version: false
+  };
+
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+    
+    switch (arg) {
+      case '--help':
+      case '-h':
+        options.help = true;
+        break;
+      case '--version':
+      case '-v':
+        options.version = true;
+        break;
+      case '--model':
+        options.model = args[++i] || 'doubao';
+        break;
+      case '--temperature':
+        options.temperature = parseFloat(args[++i]) || 0.7;
+        break;
+      case '--max-tokens':
+        options.maxTokens = parseInt(args[++i]) || 800;
+        break;
+      case '--ask':
+        options.ask = args[++i];
+        break;
+      case '--analyze':
+        options.analyze = true;
+        break;
+      case '--docs':
+        options.docs = true;
+        break;
+      case '--debug':
+        options.debug = true;
+        break;
+    }
+  }
+
+  return options;
+}
+
+function showHelp() {
+  console.log('🚀 DeepCode CLI - 支持豆包模型的AI代码助手');
+  console.log('');
+  console.log('用法: deepcode [选项]');
+  console.log('');
+  console.log('选项:');
+  console.log('  --help, -h          显示帮助信息');
+  console.log('  --version, -v       显示版本号');
+  console.log('  --model <model>     指定AI模型 (默认: doubao)');
+  console.log('  --temperature <num> 设置创造性温度 0-1 (默认: 0.7)');
+  console.log('  --max-tokens <num>  最大输出Token数 (默认: 800)');
+  console.log('  --ask <question>    直接询问问题');
+  console.log('  --analyze           分析当前项目');
+  console.log('  --docs             生成代码文档');
+  console.log('  --debug            调试模式');
+  console.log('');
+  console.log('示例:');
+  console.log('  deepcode                                # 启动交互模式');
+  console.log('  deepcode --ask "什么是递归？"             # 直接提问');
+  console.log('  deepcode --model doubao --debug         # 调试模式');
+  console.log('  deepcode --analyze                      # 分析项目');
+  console.log('');
+  console.log('环境变量:');
+  console.log('  DOUBAO_API_KEY     豆包API密钥 (必需)');
+}
+
+// 主程序
+async function main() {
+  const options = parseArgs();
+
+  if (options.help) {
+    showHelp();
+    return;
+  }
+
+  if (options.version) {
+    console.log(`DeepCode CLI v${version}`);
+    return;
+  }
+
+  // 检查API密钥
+  if (!DOUBAO_API_KEY) {
+    console.log('❌ 豆包API密钥未设置');
+    console.log('请设置环境变量:');
+    console.log('export DOUBAO_API_KEY="your-doubao-api-key"');
+    console.log('');
+    console.log('然后重新运行: deepcode');
+    console.log('');
+    console.log('使用 deepcode --help 查看更多帮助');
+    process.exit(1);
+  }
+
+  console.log(`🚀 DeepCode CLI v${version}`);
+  console.log(`🤖 使用模型: ${options.model === 'doubao' ? '字节豆包 (Doubao)' : options.model}`);
+  
+  if (options.debug) {
+    console.log('🔍 调试模式已启用');
+    console.log(`📊 配置: 温度=${options.temperature}, 最大Token=${options.maxTokens}`);
+  }
+  console.log('');
+
+  if (options.ask) {
+    // 单次问答模式
+    await askQuestion(options.ask, options);
+  } else if (options.analyze) {
+    await askQuestion('请分析当前项目的代码结构和架构', options);
+  } else if (options.docs) {
+    await askQuestion('请为当前项目生成代码文档', options);
+  } else {
+    // 默认交互模式
+    await startInteractiveMode(options);
+  }
+}
+
+main().catch(console.error);

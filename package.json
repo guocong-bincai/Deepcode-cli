@@ -1,6 +1,6 @@
 {
-  "name": "@google/gemini-cli",
-  "version": "0.13.0-nightly.20251029.cca41edc",
+  "name": "deepcode-cli",
+  "version": "1.0.0",
   "engines": {
     "node": ">=20.0.0"
   },
@@ -8,17 +8,21 @@
   "workspaces": [
     "packages/*"
   ],
-  "private": "true",
+  "private": false,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/google-gemini/gemini-cli.git"
+    "url": "git+https://github.com/guocong-bincai/deepcode-cli.git"
   },
+  "description": "DeepCode CLI - AI代码助手命令行工具，支持豆包等多种AI模型",
+  "keywords": ["ai", "cli", "code-assistant", "doubao", "coding-tool", "ai-model"],
+  "author": "DeepCode Team",
+  "license": "Apache-2.0",
   "config": {
-    "sandboxImageUri": "us-docker.pkg.dev/gemini-code-dev/gemini-cli/sandbox:0.13.0-nightly.20251029.cca41edc"
+    "sandboxImageUri": "deepcode-cli/sandbox:1.0.0"
   },
   "scripts": {
     "start": "cross-env NODE_ENV=development node scripts/start.js",
-    "start:a2a-server": "CODER_AGENT_PORT=41242 npm run start --workspace @google/gemini-cli-a2a-server",
+    "start:a2a-server": "CODER_AGENT_PORT=41242 npm run start --workspace deepcode-cli-a2a-server",
     "debug": "cross-env DEBUG=1 node --inspect-brk scripts/start.js",
     "deflake": "node scripts/deflake.js",
     "deflake:test:integration:sandbox:none": "npm run deflake -- --command=\"npm run test:integration:sandbox:none -- --retry=0\"",
@@ -49,7 +53,6 @@
     "format": "prettier --experimental-cli --write .",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "preflight": "npm run clean && npm ci && npm run format && npm run lint:ci && npm run build && npm run typecheck && npm run test:ci",
-    "prepare": "husky && npm run bundle",
     "prepare:package": "node scripts/prepare-package.js",
     "release:version": "node scripts/version.js",
     "telemetry": "node scripts/telemetry.js",
@@ -64,10 +67,10 @@
     }
   },
   "bin": {
-    "gemini": "bundle/gemini.js"
+    "deepcode": "deepcode"
   },
   "files": [
-    "bundle/",
+    "deepcode",
     "README.md",
     "LICENSE"
   ],
