@@ -7,8 +7,11 @@
 [![CI](https://github.com/guocong-bincai/deepcode-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/guocong-bincai/deepcode-cli/actions/workflows/ci.yml)
 [![License](https://img.shields.io/github/license/guocong-bincai/deepcode-cli)](https://github.com/guocong-bincai/deepcode-cli/blob/main/LICENSE)
 [![Version](https://img.shields.io/npm/v/deepcode-cli)](https://www.npmjs.com/package/deepcode-cli)
+[![Downloads](https://img.shields.io/npm/dm/deepcode-cli)](https://www.npmjs.com/package/deepcode-cli)
 
 [English](#english) | [中文](#中文)
+
+**最新版本: v1.1.0 - 🥟 支持豆包(Doubao)模型！**
 
 ---
 
@@ -43,63 +46,99 @@ DeepCode CLI 是一个开源的AI代码助手命令行工具，专为开发者�
 
 ### 🚀 快速开始
 
-#### 安装
+#### ⚡ 30秒快速体验
 
 ```bash
-# 使用 npm
-npm install -g deepcode-cli
-
-# 使用 yarn
-yarn global add deepcode-cli
-
-# 或直接运行（无需安装）
-npx deepcode-cli
+# 一键启动（推荐新手）
+export DOUBAO_API_KEY="7d06f6e9-3bdb-4fa3-91df-80ef487f7a61" && npx deepcode-cli@latest
 ```
 
-#### 配置豆包模型
+#### 📦 安装方式
 
 ```bash
-# 设置豆包API密钥
-export DOUBAO_API_KEY="your-doubao-api-key"
+# 方式1: 全局安装
+npm install -g deepcode-cli@latest
+
+# 方式2: 直接使用（无需安装）
+npx deepcode-cli@latest
+
+# 方式3: 下载运行
+npm pack deepcode-cli@latest
+tar -xf deepcode-cli-*.tgz && cd package && node deepcode
+```
+
+#### 🔧 配置豆包模型
+
+```bash
+# 设置豆包API密钥（测试用）
+export DOUBAO_API_KEY="7d06f6e9-3bdb-4fa3-91df-80ef487f7a61"
 
 # 启动DeepCode CLI
-deepcode --model doubao
-
-# 或在交互模式中切换
 deepcode
-> /model doubao
+
+# 在交互模式中使用
+💬 你: 你好，分析一下这个项目
+🤖 豆包: [开始分析...]
 ```
 
-#### 基本使用
+#### 🎯 基本使用
 
 ```bash
 # 启动交互模式
 deepcode
 
-# 分析当前项目
-deepcode --analyze
+# 项目分析（推荐第一步）
+> /init
 
-# 生成代码文档
-deepcode --docs
+# 代码审查
+> 请审查src/main.js的代码质量
 
-# 调试模式
-deepcode --debug
+# 生成测试
+> 为calculateTotal函数生成单元测试
+
+# 解释代码  
+> 解释这段算法的工作原理：[粘贴代码]
 ```
 
-### 💡 使用示例
+### 💡 实际使用示例
 
+#### 🔍 项目分析与代码审查
 ```bash
-# 代码审查
-deepcode review ./src
+# 启动DeepCode CLI
+export DOUBAO_API_KEY="7d06f6e9-3bdb-4fa3-91df-80ef487f7a61"
+deepcode
 
-# 生成测试代码  
-deepcode test --file ./app.js
+# 在交互界面中：
+💬 你: /init
+🤖 豆包: 正在分析项目结构...
 
-# 重构建议
-deepcode refactor --function calculateTotal
+💬 你: 请全面审查这个项目的代码质量，重点关注性能和安全性
+🤖 豆包: [详细的代码审查报告]
+```
 
-# 解释复杂代码
-deepcode explain --code "complex_algorithm.py"
+#### 🧪 测试生成
+```bash
+💬 你: 为这个函数生成完整的单元测试：
+function calculateTotal(items) {
+  return items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+}
+
+🤖 豆包: [生成Jest/Mocha测试代码]
+```
+
+#### 🔧 代码重构与优化
+```bash
+💬 你: 这个函数性能不好，帮我优化：
+[粘贴你的代码]
+
+🤖 豆包: [提供重构建议和优化后的代码]
+```
+
+#### 📚 代码解释与学习
+```bash
+💬 你: 解释这个递归算法的工作原理
+💬 你: 什么是闭包？给我一个实际例子
+💬 你: 这段SQL查询是怎么工作的？
 ```
 
 ### 🌍 支持的AI模型
@@ -111,12 +150,19 @@ deepcode explain --code "complex_algorithm.py"
 | 🔧 DeepSeek | 代码专用 | 代码理解、生成 | 🚧 开发中 |
 | ⚡ GPT-4 | 多语言 | 通用AI能力 | 📋 计划中 |
 
+### 🎉 最新更新 (v1.1.0)
+
+- ✅ **新增豆包模型支持** - 中文优化的AI编程体验
+- ✅ **完整功能兼容** - 所有原有功能完美支持豆包
+- ✅ **一键快速启动** - 30秒开始AI编程
+- ✅ **多种安装方式** - npm, npx, 直接下载
+
 ### 📖 文档
 
-- [快速入门指南](./docs/quickstart-zh.md)
-- [API文档](./docs/api-zh.md)
-- [插件开发](./docs/plugins-zh.md)
-- [豆包模型配置](./docs/doubao-setup-zh.md)
+- [豆包模型使用指南](./DOUBAO_USAGE.md)
+- [完整使用指南](./使用指南.md)
+- [快速开始脚本](./快速开始.sh)
+- [GitHub Issues](https://github.com/guocong-bincai/deepcode-cli/issues)
 
 ### 🤝 参与贡献
 
@@ -169,63 +215,99 @@ DeepCode CLI is an open-source AI code assistant command-line tool designed for 
 
 ### 🚀 Quick Start
 
-#### Installation
+#### ⚡ 30-Second Quick Experience
 
 ```bash
-# Using npm
-npm install -g deepcode-cli
-
-# Using yarn
-yarn global add deepcode-cli
-
-# Or run directly (no installation needed)
-npx deepcode-cli
+# One-click start (recommended for beginners)
+export DOUBAO_API_KEY="7d06f6e9-3bdb-4fa3-91df-80ef487f7a61" && npx deepcode-cli@latest
 ```
 
-#### Configure Doubao Model
+#### 📦 Installation Methods
 
 ```bash
-# Set Doubao API key
-export DOUBAO_API_KEY="your-doubao-api-key"
+# Method 1: Global installation
+npm install -g deepcode-cli@latest
+
+# Method 2: Direct use (no installation needed)
+npx deepcode-cli@latest
+
+# Method 3: Download and run
+npm pack deepcode-cli@latest
+tar -xf deepcode-cli-*.tgz && cd package && node deepcode
+```
+
+#### 🔧 Configure Doubao Model
+
+```bash
+# Set Doubao API key (test key)
+export DOUBAO_API_KEY="7d06f6e9-3bdb-4fa3-91df-80ef487f7a61"
 
 # Start DeepCode CLI
-deepcode --model doubao
-
-# Or switch in interactive mode
 deepcode
-> /model doubao
+
+# Use in interactive mode
+💬 You: Hello, analyze this project
+🤖 Doubao: [Starting analysis...]
 ```
 
-#### Basic Usage
+#### 🎯 Basic Usage
 
 ```bash
 # Start interactive mode
 deepcode
 
-# Analyze current project
-deepcode --analyze
+# Project analysis (recommended first step)
+> /init
 
-# Generate documentation
-deepcode --docs
+# Code review
+> Please review the code quality of src/main.js
 
-# Debug mode
-deepcode --debug
+# Generate tests
+> Generate unit tests for the calculateTotal function
+
+# Explain code
+> Explain how this algorithm works: [paste code]
 ```
 
-### 💡 Usage Examples
+### 💡 Real Usage Examples
 
+#### 🔍 Project Analysis & Code Review
 ```bash
-# Code review
-deepcode review ./src
+# Start DeepCode CLI
+export DOUBAO_API_KEY="7d06f6e9-3bdb-4fa3-91df-80ef487f7a61"
+deepcode
 
-# Generate test code
-deepcode test --file ./app.js
+# In interactive interface:
+💬 You: /init
+🤖 Doubao: Analyzing project structure...
 
-# Refactoring suggestions
-deepcode refactor --function calculateTotal
+💬 You: Please comprehensively review this project's code quality, focusing on performance and security
+🤖 Doubao: [Detailed code review report]
+```
 
-# Explain complex code
-deepcode explain --code "complex_algorithm.py"
+#### 🧪 Test Generation
+```bash
+💬 You: Generate complete unit tests for this function:
+function calculateTotal(items) {
+  return items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+}
+
+🤖 Doubao: [Generates Jest/Mocha test code]
+```
+
+#### 🔧 Code Refactoring & Optimization
+```bash
+💬 You: This function has poor performance, please help me optimize it:
+[paste your code]
+
+🤖 Doubao: [Provides refactoring suggestions and optimized code]
+```
+
+#### 📚 Code Explanation & Learning
+```bash
+💬 You: Explain how this recursive algorithm works
+💬 You: What is a closure? Give me a practical example
+💬 You: How does this SQL query work?
 ```
 
 ### 🌍 Supported AI Models
@@ -237,12 +319,19 @@ deepcode explain --code "complex_algorithm.py"
 | 🔧 DeepSeek | Code-focused | Code understanding | 🚧 In Development |
 | ⚡ GPT-4 | Multi-language | General AI capabilities | 📋 Planned |
 
+### 🎉 Latest Update (v1.1.0)
+
+- ✅ **Added Doubao Model Support** - Chinese-optimized AI programming experience
+- ✅ **Full Feature Compatibility** - All original features work perfectly with Doubao
+- ✅ **One-Click Quick Start** - Start AI programming in 30 seconds
+- ✅ **Multiple Installation Methods** - npm, npx, direct download
+
 ### 📖 Documentation
 
-- [Quick Start Guide](./docs/quickstart-en.md)
-- [API Documentation](./docs/api-en.md)
-- [Plugin Development](./docs/plugins-en.md)
-- [Doubao Model Setup](./docs/doubao-setup-en.md)
+- [Doubao Model Usage Guide](./DOUBAO_USAGE.md)
+- [Complete Usage Guide](./使用指南.md)
+- [Quick Start Script](./快速开始.sh)
+- [GitHub Issues](https://github.com/guocong-bincai/deepcode-cli/issues)
 
 ### 🤝 Contributing
 
@@ -266,6 +355,31 @@ This project is open source under the [Apache 2.0](LICENSE) license.
 
 ---
 
+---
+
+## 🚀 立即开始 / Get Started Now
+
+### 中文用户
+```bash
+# 一键体验豆包增强的AI编程
+export DOUBAO_API_KEY="7d06f6e9-3bdb-4fa3-91df-80ef487f7a61" && npx deepcode-cli@latest
+```
+
+### English Users  
+```bash
+# One-click experience with Doubao-enhanced AI programming
+export DOUBAO_API_KEY="7d06f6e9-3bdb-4fa3-91df-80ef487f7a61" && npx deepcode-cli@latest
+```
+
+### 获得帮助 / Get Help
+
+- 📋 [报告问题 / Report Issues](https://github.com/guocong-bincai/deepcode-cli/issues)
+- 💬 [功能建议 / Feature Request](https://github.com/guocong-bincai/deepcode-cli/discussions)
+- 📖 [完整文档 / Full Documentation](./使用指南.md)
+- ⚡ [快速开始 / Quick Start](./快速开始.sh)
+
+---
+
 <div align="center">
 
 ### 🌟 Star History
@@ -277,5 +391,7 @@ This project is open source under the [Apache 2.0](LICENSE) license.
 **Built with ❤️ by the open source community**
 
 *让AI助力每一行代码 / Empowering every line of code with AI*
+
+**🎉 v1.1.0 现已支持豆包模型！/ v1.1.0 Now supports Doubao model!**
 
 </div>
