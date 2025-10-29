@@ -8,7 +8,7 @@
 import readline from 'readline';
 
 const DOUBAO_API_KEY = process.env.DOUBAO_API_KEY;
-const version = '1.0.0';
+const version = '1.1.1';
 
 // 豆包API调用函数
 async function callDoubao(userInput, options = {}) {
